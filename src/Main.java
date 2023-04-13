@@ -43,7 +43,11 @@ public class Main {
 
         List<Integer> integerList = Arrays.asList(1, 2, 3, 4, 5, 10, 9, 8, 7, 6);
 
-        findMinMax(integerList.stream(),
+        findMinMax2(integerList.stream(),
+                Comparator.naturalOrder(),
+                (min, max) -> System.out.println(min + "- минимальное значение \n" + max + " максимальное значение \n"));
+
+        findMinMax3(integerList.stream(),
                 Comparator.naturalOrder(),
                 (min, max) -> System.out.println(min + "- минимальное значение \n" + max + " максимальное значение \n"));
 
@@ -62,17 +66,48 @@ public class Main {
         }
 
         //2-я задача -------------------------
-        Integer counter = 0;
-        for (int i = 0; i < arr.length; i++) {
-            if (((Integer) arr[i] % 2) == 0) {
-                System.out.print(arr[i] + ", ");
-                counter++;
-            }
+//        Integer counter = 0;
+//        for (int i = 0; i < arr.length; i++) {
+//            if (((Integer) arr[i] % 2) == 0) {
+//                System.out.print(arr[i] + ", ");
+//                counter++;
+//            }
+//        }
+//        System.out.println();
+//        System.out.println(counter);
+    }
 
+
+    // 1-я задача 2-й вариант через List------------------------
+    public static <T> void findMinMax2(Stream<? extends T> stream, Comparator<? super T> order, BiConsumer<? super T, ? super T> minMaxConsumer) {
+        List<? extends T> lists = stream.sorted(order).toList();
+
+
+        if (lists.size() == 0) {
+            minMaxConsumer.accept(null, null);
+        } else {
+            T min = lists.get(0);
+            T max = lists.get(lists.size() - 1);
+            minMaxConsumer.accept(min, max);
         }
+    }
+
+    //2-я задача 2-й вариант через Stream-------------------------
+    public static <T> void findMinMax3(Stream<? extends T> stream, Comparator<? super T> order, BiConsumer<? super T, ? super T> minMaxConsumer) {
+
+        List<Integer> list = stream
+                .sorted(order)
+                .map(String::valueOf)
+                .map(Integer::valueOf)
+                .filter(x -> x % 2 == 0)
+                .toList();
+
+        list.forEach(x -> System.out.print(x + " "));
+
         System.out.println();
-        System.out.println(counter);
+        System.out.println("Количество четных элементов: " + list.size());
 
     }
+
 
 }
